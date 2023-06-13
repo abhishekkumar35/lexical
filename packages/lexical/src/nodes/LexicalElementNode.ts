@@ -58,6 +58,13 @@ export type ElementFormatType =
   | 'justify'
   | '';
 
+const excludedProperties = new Set<string>([
+  ...LexicalNode.getExcludedProperties(),
+  '__first',
+  '__last',
+  '__size',
+]);
+
 /** @noInheritDoc */
 export class ElementNode extends LexicalNode {
   /** @internal */
@@ -81,6 +88,10 @@ export class ElementNode extends LexicalNode {
     this.__format = 0;
     this.__indent = 0;
     this.__dir = null;
+  }
+
+  static getExcludedProperties(): Set<string> {
+    return excludedProperties;
   }
 
   getFormat(): number {

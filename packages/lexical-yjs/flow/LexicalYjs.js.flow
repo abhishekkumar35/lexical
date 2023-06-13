@@ -111,8 +111,6 @@ export type Binding = {
   root: CollabElementNode,
 };
 
-export type ExcludedProperties = Map<Class<LexicalNode>, Set<string>>;
-
 declare export class CollabDecoratorNode {
   _xmlElem: XmlElement;
   _key: NodeKey;

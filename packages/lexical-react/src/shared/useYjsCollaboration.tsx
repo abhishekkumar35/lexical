@@ -6,7 +6,7 @@
  *
  */
 
-import type {Binding, ExcludedProperties, Provider} from '@lexical/yjs';
+import type {Binding, Provider} from '@lexical/yjs';
 import type {LexicalEditor} from 'lexical';
 
 import {mergeRegister} from '@lexical/utils';
@@ -50,15 +50,14 @@ export function useYjsCollaboration(
   shouldBootstrap: boolean,
   cursorsContainerRef?: CursorsContainerRef,
   initialEditorState?: InitialEditorStateType,
-  excludedProperties?: ExcludedProperties,
   awarenessData?: object,
 ): [JSX.Element, Binding] {
   const isReloadingDoc = useRef(false);
   const [doc, setDoc] = useState(docMap.get(id));
 
   const binding = useMemo(
-    () => createBinding(editor, provider, id, doc, docMap, excludedProperties),
-    [editor, provider, id, docMap, doc, excludedProperties],
+    () => createBinding(editor, provider, id, doc, docMap),
+    [editor, provider, id, docMap, doc],
   );
 
   const connect = useCallback(() => {

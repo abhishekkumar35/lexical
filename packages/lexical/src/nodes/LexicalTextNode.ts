@@ -272,6 +272,11 @@ function wrapElementWith(element: HTMLElement, tag: string): HTMLElement {
   return el;
 }
 
+const excludedProperties = new Set<string>([
+  ...LexicalNode.getExcludedProperties(),
+  '__text',
+]);
+
 /** @noInheritDoc */
 export class TextNode extends LexicalNode {
   __text: string;
@@ -290,6 +295,10 @@ export class TextNode extends LexicalNode {
 
   static clone(node: TextNode): TextNode {
     return new TextNode(node.__text, node.__key);
+  }
+
+  static getExcludedProperties(): Set<string> {
+    return excludedProperties;
   }
 
   constructor(text: string, key?: NodeKey) {

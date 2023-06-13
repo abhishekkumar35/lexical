@@ -151,6 +151,13 @@ export type DOMExportOutput = {
 
 export type NodeKey = string;
 
+const excludedProperties = new Set<string>([
+  '__key',
+  '__parent',
+  '__next',
+  '__prev',
+]);
+
 export class LexicalNode {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
@@ -197,6 +204,10 @@ export class LexicalNode {
       'LexicalNode: Node %s does not implement .clone().',
       this.name,
     );
+  }
+
+  static getExcludedProperties(): Set<string> {
+    return excludedProperties;
   }
 
   constructor(key?: NodeKey) {

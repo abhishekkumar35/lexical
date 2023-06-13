@@ -21,6 +21,11 @@ export type SerializedRootNode<
   T extends SerializedLexicalNode = SerializedLexicalNode,
 > = SerializedElementNode<T>;
 
+const excludedProperties = new Set<string>([
+  ...ElementNode.getExcludedProperties(),
+  '__cachedText',
+]);
+
 /** @noInheritDoc */
 export class RootNode extends ElementNode {
   /** @internal */
@@ -32,6 +37,10 @@ export class RootNode extends ElementNode {
 
   static clone(): RootNode {
     return new RootNode();
+  }
+
+  static getExcludedProperties(): Set<string> {
+    return excludedProperties;
   }
 
   constructor() {

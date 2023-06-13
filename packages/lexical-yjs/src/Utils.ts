@@ -40,18 +40,6 @@ import {
 } from './CollabLineBreakNode';
 import {$createCollabTextNode, CollabTextNode} from './CollabTextNode';
 
-const excludedProperties: Set<string> = new Set([
-  '__key',
-  '__parent',
-  '__cachedText',
-  '__text',
-  '__size',
-  '__next',
-  '__prev',
-  '__first',
-  '__last',
-]);
-
 export function getIndexOfYjsNode(
   yjsParentNode: YjsNode,
   yjsNode: YjsNode,
@@ -237,23 +225,13 @@ export function syncPropertiesFromYjs(
         : Object.keys(sharedType.getAttributes())
       : Array.from(keysChanged);
   let writableNode;
-
+  const nodeKlass = lexicalNode.constructor as Klass<LexicalNode>;
+  const excludedProperties = nodeKlass.getExcludedProperties();
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i];
-
     if (excludedProperties.has(property)) {
       continue;
     }
-    const additionalExcludedProperties = binding.excludedProperties.get(
-      lexicalNode.constructor as Klass<LexicalNode>,
-    );
-    if (
-      additionalExcludedProperties !== undefined &&
-      additionalExcludedProperties.has(property)
-    ) {
-      continue;
-    }
-
     const prevValue = lexicalNode[property];
     let nextValue =
       sharedType instanceof YMap
@@ -293,17 +271,12 @@ export function syncPropertiesFromLexical(
 ): void {
   const type = nextLexicalNode.__type;
   const nodeProperties = binding.nodeProperties;
+  const nodeKlass = nextLexicalNode.constructor as Klass<LexicalNode>;
+  const excludedProperties = nodeKlass.getExcludedProperties();
   let properties = nodeProperties.get(type);
   if (properties === undefined) {
-    const additionalExlcudedProperties = binding.excludedProperties.get(
-      nextLexicalNode.constructor as Klass<LexicalNode>,
-    );
     properties = Object.keys(nextLexicalNode).filter((property) => {
-      return (
-        !excludedProperties.has(property) ||
-        (additionalExlcudedProperties &&
-          !additionalExlcudedProperties.has(property))
-      );
+      return !excludedProperties.has(property);
     });
     nodeProperties.set(type, properties);
   }
